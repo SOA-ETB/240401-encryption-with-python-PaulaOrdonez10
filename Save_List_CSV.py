@@ -2,8 +2,8 @@ import os
 import pandas as pd
 from openpyxl import load_workbook
 
-# Folder with encrypted Excel files
-excel_folder = "C:/Users/Administrator/OneDrive - School of Automation/Blue Prism Advance SOA/Phyton_task/IE3_DOWNLOAD"
+# Nueva ruta con archivos de Excel encriptados
+excel_folder = "C:/Users/Administrator/OneDrive - School of Automation/Blue Prism Advance SOA/PythonEncryptionProject/Phyton_Encryption_Files/IE3_DOWNLOAD"
 
 # List of CSV with passwords
 password_files = [
@@ -12,24 +12,24 @@ password_files = [
     "C:/Users/Administrator/OneDrive - School of Automation/Blue Prism Advance SOA/PasswordGeneratorProject/passwords_5000_Paula.csv"
 ]
 
-# Read passwords from CSV files
+# Leer contraseñas de los archivos CSV
 passwords = []
 for password_file in password_files:
     df = pd.read_csv(password_file)
     passwords.extend(df['Passwords'].tolist()) 
 
-print("Passwords obtained:", passwords)  # Verify that passwords are read correctly
+print("Passwords obtained:", passwords)  # Verificar que las contraseñas se lean correctamente
 
-# Create a dictionary to store the filenames of encrypted Excel files and their passwords
+# Crear un diccionario para almacenar los nombres de archivo de los archivos de Excel encriptados y sus contraseñas
 encrypted_files = {}
 
-# Encrypt Excel files in the folder and store filenames and passwords in the dictionary
+# Encriptar archivos de Excel en la carpeta y almacenar nombres de archivo y contraseñas en el diccionario
 for root, dirs, files in os.walk(excel_folder):
     for file in files:
         if file.endswith(".xlsx"):
             excel_file_path = os.path.join(root, file)
             try:
-                password = passwords.pop(0)  # Get the next password
+                password = passwords.pop(0)  # Obtener la próxima contraseña
                 wb = load_workbook(excel_file_path)
                 ws = wb.active
                 ws.protection.set_password(password)
@@ -39,9 +39,10 @@ for root, dirs, files in os.walk(excel_folder):
             except Exception as e:
                 print(f"Error encrypting {excel_file_path}: {str(e)}")
 
-# Save the dictionary to a CSV file
-output_csv = "C:/Users/Administrator/OneDrive - School of Automation/Blue Prism Advance SOA/Phyton_task/Phyton_Encryption_Files/encrypted_files.csv"
+# Guardar el diccionario en un archivo CSV
+output_csv = "C:/Users/Administrator/OneDrive - School of Automation/Blue Prism Advance SOA/PythonEncryptionProject/Phyton_Encryption_Files/encrypted_files.csv"
 df_output = pd.DataFrame(encrypted_files.items(), columns=['Filename', 'Password'])
 df_output.to_csv(output_csv, index=False)
 print(f"Encrypted files list saved to {output_csv}")
+
 
